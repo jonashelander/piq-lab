@@ -1,0 +1,152 @@
+import { useState, useEffect, useCallback } from 'react';
+import { LogEntry } from '../types';
+import { fetchLogsFor, clearLogsFor } from '../api';
+
+function JsonDisplay({ data }: { data: unknown }) {
+  return (
+    <pre className="json-display">
+      {JSON.stringify(data, null, 2)}
+    </pre>
+  );
+}
+
+function LogCard({ entry }: { entry: LogEntry }) {
+  const [expanded, setExpanded] = useState(false);
+  const statusClass = `status-${Math.floor(entry.responseStatus / 100)}xx`;
+
+  return (
+    <div className="log-card">
+      <button
+        className="log-card-header"
+        onClick={() => setExpanded(e => !e)}
+      >
+        <div className="log-card-summary">
+          <span className="log-method-badge">{entry.method}</span>
+          <span className="log-path">{entry.path}</span>
+          <span className={`log-status ${statusClass}`}>
+            {entry.responseStatus}
+          </span>
+          <span className="log-timestamp">
+            {new Date(entry.timestamp).toLocaleTimeString()}
+          </span>
+        </div>
+        <span className={`sidebar-chevron ${expanded ? 'open' : ''}`}>›</span>
+      </button>
+
+      {expanded && (
+        <div className="log-card-body">
+          <p className="log-detail-timestamp">
+            {new Date(entry.timestamp).toLocaleString()}
+          </p>
+          <div className="log-sections">
+            <div className="log-section">
+              <h4 className="log-section-title">Request Headers</h4>
+              <JsonDisplay data={entry.requestHeaders} />
+            </div>
+            <div className="log-section">
+              <h4 className="log-section-title">Request Body</h4>
+              <JsonDisplay data={entry.requestBody} />
+            </div>
+            <div className="log-section">
+              <h4 className="log-section-title">Response Headers</h4>
+              <JsonDisplay data={entry.responseHeaders} />
+            </div>
+            <div className="log-section">
+              <h4 className="log-section-title">Response Body</h4>
+              <JsonDisplay data={entry.responseBody} />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface Props {
+  endpoint: string;
+}
+
+export default function EndpointLogsPage({ endpoint }: Props) {
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [clearing, setClearing] = useState(false);
+
+  const loadLogs = useCallback(async () => {
+    try {
+      const data = await fetchLogsFor(endpoint);
+      setLogs(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [endpoint]);
+
+  useEffect(() => {
+    setLoading(true);
+    setLogs([]);
+    loadLogs();
+    const interval = setInterval(loadLogs, 5000);
+    return () => clearInterval(interval);
+  }, [loadLogs]);
+
+  async function handleClear() {
+    setClearing(true);
+    try {
+      await clearLogsFor(endpoint);
+      setLogs([]);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setClearing(false);
+    }
+  }
+
+  if (loading) {
+    return <div className="page-loading">Loading logs…</div>;
+  }
+
+  return (
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">{endpoint}</h1>
+          <p className="page-subtitle">
+            Incoming requests and outgoing responses for{' '}
+            <code>POST /{endpoint}</code>
+          </p>
+        </div>
+        <div className="page-actions">
+          <button className="btn btn-ghost" onClick={loadLogs}>
+            Refresh
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={handleClear}
+            disabled={clearing || logs.length === 0}
+          >
+            {clearing ? 'Clearing…' : 'Clear logs'}
+          </button>
+        </div>
+      </div>
+
+      {logs.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-icon">○</div>
+          <p className="empty-state-text">No logs yet.</p>
+          <p className="empty-state-hint">
+            Send a request to <code>POST /{endpoint}</code> to see logs here.
+            Logs auto-refresh every 5 seconds.
+          </p>
+        </div>
+      ) : (
+        <div className="log-list">
+          <p className="log-count">{logs.length} request{logs.length !== 1 ? 's' : ''} logged</p>
+          {logs.map(entry => (
+            <LogCard key={entry.id} entry={entry} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
