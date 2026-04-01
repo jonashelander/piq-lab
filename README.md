@@ -1,6 +1,6 @@
 # PIQ Lab
 
-PIQ Lab is a configurable mock integration API with a React frontend and a Node/Express/TypeScript backend.
+PIQ Lab is a configurable mock integration API supporting multiple endpoints, with a React frontend and a Node/Express/TypeScript backend.
 
 ## Setup
 
@@ -28,15 +28,40 @@ Runs on `http://localhost:3000`.
 
 Open `http://localhost:3000` in your browser.
 
-- **PIQ Lab → verifyuser** — Configure the response returned by `POST /verifyuser`. Toggle individual parameters, edit values, manage `attributes` key/value pairs, and import a complete JSON object.
-- **Logs → verifyuser** — Inspect every incoming request and outgoing response, including headers and bodies. Logs auto-refresh every 5 seconds.
+- **PIQ Lab** — Select an endpoint to configure the response it returns. Toggle individual fields, edit values, manage nested key/value pairs where applicable, and import a complete JSON object.
+- **Logs** — Inspect every incoming request and outgoing response per endpoint, including headers and bodies. Logs auto-refresh every 5 seconds.
 
-### Test the endpoint
+### Supported endpoints
+
+| Endpoint | Route |
+|---|---|
+| verifyuser | `POST /verifyuser` |
+| authorize | `POST /authorize` |
+| transfer | `POST /transfer` |
+| cancel | `POST /cancel` |
+
+### Test an endpoint
 
 ```bash
+# verifyuser
 curl -X POST http://localhost:3001/verifyuser \
   -H "Content-Type: application/json" \
   -d '{"sessionId":"sess_abc","userId":"user123"}'
+
+# authorize
+curl -X POST http://localhost:3001/authorize \
+  -H "Content-Type: application/json" \
+  -d '{"userId":"user123","merchantTxId":"111111111"}'
+
+# transfer
+curl -X POST http://localhost:3001/transfer \
+  -H "Content-Type: application/json" \
+  -d '{"userId":"user123","merchantTxId":"111111111","amount":"100.00"}'
+
+# cancel
+curl -X POST http://localhost:3001/cancel \
+  -H "Content-Type: application/json" \
+  -d '{"userId":"user123","merchantTxId":"111111111"}'
 ```
 
-Restarting the backend resets all configuration and logs to seeded defaults.
+Restarting the backend resets all endpoint configurations and logs to seeded defaults.
