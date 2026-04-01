@@ -3,7 +3,7 @@ import { store } from '../store';
 
 const router = Router();
 
-const endpoints = ['verifyuser', 'authorize', 'transfer', 'cancel'] as const;
+const endpoints = ['verifyuser', 'authorize', 'transfer', 'cancel', 'notification', 'lookupuser', 'signin'] as const;
 
 for (const ep of endpoints) {
   router.get(`/${ep}`, (_req, res) => {

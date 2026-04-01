@@ -19,7 +19,10 @@ export interface LogEntry {
 }
 
 export type Page =
-  | 'config-verifyuser' | 'logs-verifyuser'
-  | 'config-authorize'  | 'logs-authorize'
-  | 'config-transfer'   | 'logs-transfer'
-  | 'config-cancel'     | 'logs-cancel';
+  | 'config-verifyuser'   | 'logs-verifyuser'
+  | 'config-authorize'    | 'logs-authorize'
+  | 'config-transfer'     | 'logs-transfer'
+  | 'config-cancel'       | 'logs-cancel'
+  | 'config-notification' | 'logs-notification'
+  | 'config-lookupuser'   | 'logs-lookupuser'
+  | 'config-signin'       | 'logs-signin';

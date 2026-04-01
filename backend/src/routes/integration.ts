@@ -43,9 +43,12 @@ function addMockEndpoint(
   });
 }
 
-addMockEndpoint('/verifyuser', 'verifyuser', () => store.verifyuserConfig);
-addMockEndpoint('/authorize',  'authorize',  () => store.authorizeConfig);
-addMockEndpoint('/transfer',   'transfer',   () => store.transferConfig);
-addMockEndpoint('/cancel',     'cancel',     () => store.cancelConfig);
+addMockEndpoint('/verifyuser',   'verifyuser',   () => store.verifyuserConfig);
+addMockEndpoint('/authorize',    'authorize',    () => store.authorizeConfig);
+addMockEndpoint('/transfer',     'transfer',     () => store.transferConfig);
+addMockEndpoint('/cancel',       'cancel',       () => store.cancelConfig);
+addMockEndpoint('/notification', 'notification', () => store.notificationConfig);
+addMockEndpoint('/lookupuser',   'lookupuser',   () => store.lookupuserConfig);
+addMockEndpoint('/signin',       'signin',       () => store.signinConfig);
 
 export default router;

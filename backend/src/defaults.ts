@@ -49,3 +49,43 @@ export const DEFAULT_CANCEL_CONFIG: ConfigRecord[] = [
   { key: 'errCode', value: '',         included: false, order: 2 },
   { key: 'errMsg',  value: '',         included: false, order: 3 },
 ];
+
+export const DEFAULT_NOTIFICATION_CONFIG: ConfigRecord[] = [
+  { key: 'success', value: 'true', included: true,  order: 0 },
+  { key: 'errCode', value: '',     included: false, order: 1 },
+  { key: 'errMsg',  value: '',     included: false, order: 2 },
+];
+
+export const DEFAULT_LOOKUPUSER_CONFIG: ConfigRecord[] = [
+  { key: 'userId',    value: 'user_123',           included: true,  order: 0  },
+  { key: 'success',   value: 'true',               included: true,  order: 1  },
+  { key: 'userCat',   value: 'VIP_SE',             included: true,  order: 2  },
+  { key: 'kycStatus', value: 'Approved',           included: true,  order: 3  },
+  { key: 'sex',       value: 'UNKNOWN',            included: true,  order: 4  },
+  { key: 'firstName', value: 'John',               included: true,  order: 5  },
+  { key: 'lastName',  value: 'Jonsson',            included: true,  order: 6  },
+  { key: 'street',    value: 'Storgatan 1',        included: true,  order: 7  },
+  { key: 'city',      value: 'Stockholm',          included: true,  order: 8  },
+  { key: 'state',     value: 'Stockholm',          included: true,  order: 9  },
+  { key: 'zip',       value: '177 32',             included: true,  order: 10 },
+  { key: 'country',   value: 'SWE',               included: true,  order: 11 },
+  { key: 'email',     value: 'test@example.com',  included: true,  order: 12 },
+  { key: 'dob',       value: '1981-01-01',         included: true,  order: 13 },
+  { key: 'mobile',    value: '+46733123123',       included: true,  order: 14 },
+  { key: 'balance',   value: '100.5',             included: true,  order: 15 },
+  { key: 'balanceCy', value: 'SEK',               included: true,  order: 16 },
+  { key: 'locale',    value: 'sv_SE',             included: true,  order: 17 },
+  { key: 'attributes',value: {},                  included: true,  order: 18 },
+  { key: 'errCode',   value: '',                  included: false, order: 19 },
+  { key: 'errMsg',    value: '',                  included: false, order: 20 },
+];
+
+export const DEFAULT_SIGNIN_CONFIG: ConfigRecord[] = [
+  { key: 'userId',    value: 'user_123', included: true,  order: 0 },
+  { key: 'success',   value: 'true',     included: true,  order: 1 },
+  { key: 'sessionId', value: '',         included: true,  order: 2 },
+  { key: 'balance',   value: '100.5',   included: true,  order: 3 },
+  { key: 'balanceCy', value: 'SEK',     included: true,  order: 4 },
+  { key: 'errCode',   value: '',         included: false, order: 5 },
+  { key: 'errMsg',    value: '',         included: false, order: 6 },
+];

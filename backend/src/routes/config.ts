@@ -48,4 +48,22 @@ addConfigRoutes(
   c => { store.cancelConfig = c; },
 );
 
+addConfigRoutes(
+  'notification',
+  () => store.notificationConfig,
+  c => { store.notificationConfig = c; },
+);
+
+addConfigRoutes(
+  'lookupuser',
+  () => store.lookupuserConfig,
+  c => { store.lookupuserConfig = c; },
+);
+
+addConfigRoutes(
+  'signin',
+  () => store.signinConfig,
+  c => { store.signinConfig = c; },
+);
+
 export default router;

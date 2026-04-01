@@ -15,8 +15,14 @@ export default function App() {
       case 'logs-authorize':    return <EndpointLogsPage endpoint="authorize" />;
       case 'config-transfer':   return <EndpointConfigPage endpoint="transfer" />;
       case 'logs-transfer':     return <EndpointLogsPage endpoint="transfer" />;
-      case 'config-cancel':     return <EndpointConfigPage endpoint="cancel" />;
-      case 'logs-cancel':       return <EndpointLogsPage endpoint="cancel" />;
+      case 'config-cancel':        return <EndpointConfigPage endpoint="cancel" />;
+      case 'logs-cancel':          return <EndpointLogsPage endpoint="cancel" />;
+      case 'config-notification':  return <EndpointConfigPage endpoint="notification" />;
+      case 'logs-notification':    return <EndpointLogsPage endpoint="notification" />;
+      case 'config-lookupuser':    return <EndpointConfigPage endpoint="lookupuser" nestedField="attributes" />;
+      case 'logs-lookupuser':      return <EndpointLogsPage endpoint="lookupuser" />;
+      case 'config-signin':        return <EndpointConfigPage endpoint="signin" />;
+      case 'logs-signin':          return <EndpointLogsPage endpoint="signin" />;
     }
   }
 
