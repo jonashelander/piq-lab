@@ -39,6 +39,9 @@ Open `http://localhost:3000` in your browser.
 | authorize | `POST /authorize` |
 | transfer | `POST /transfer` |
 | cancel | `POST /cancel` |
+| notification | `POST /notification` |
+| lookupuser | `POST /lookupuser` |
+| signin | `POST /signin` |
 
 ### Test an endpoint
 
@@ -62,6 +65,21 @@ curl -X POST http://localhost:3001/transfer \
 curl -X POST http://localhost:3001/cancel \
   -H "Content-Type: application/json" \
   -d '{"userId":"user123","merchantTxId":"111111111"}'
+
+# notification
+curl -X POST http://localhost:3001/notification \
+  -H "Content-Type: application/json" \
+  -d '{"userId":"user123","merchantTxId":"111111111"}'
+
+# lookupuser (supports configurable nested attributes)
+curl -X POST http://localhost:3001/lookupuser \
+  -H "Content-Type: application/json" \
+  -d '{"userId":"user123"}'
+
+# signin
+curl -X POST http://localhost:3001/signin \
+  -H "Content-Type: application/json" \
+  -d '{"userId":"user123","sessionId":"sess_abc"}'
 ```
 
 Restarting the backend resets all endpoint configurations and logs to seeded defaults.
