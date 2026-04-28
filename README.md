@@ -4,25 +4,20 @@ PIQ Lab is a configurable mock integration API supporting multiple endpoints, wi
 
 ## Setup
 
-### Backend
+From the repo root, run:
 
 ```bash
-cd backend
-npm install
 npm run dev
 ```
 
-Runs on `http://localhost:3001`.
+This installs backend and frontend dependencies automatically on first run, then starts both dev servers together. Output from each server is prefixed with `[backend]` or `[frontend]`.
 
-### Frontend
+On later runs, dependencies are only reinstalled if `package.json` or `package-lock.json` has changed. Otherwise startup is immediate.
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+- Backend runs on `http://localhost:3001`
+- Frontend runs on `http://localhost:3000`
 
-Runs on `http://localhost:3000`.
+Press `Ctrl+C` to stop both servers.
 
 ## Usage
 

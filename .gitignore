@@ -22,6 +22,7 @@ coverage/
 # Cache
 .vite/
 *.tsbuildinfo
+.dev-install-state.json
 
 # OS
 .DS_Store

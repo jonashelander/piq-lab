@@ -12,26 +12,39 @@ function JsonDisplay({ data }: { data: unknown }) {
 
 function LogCard({ entry }: { entry: LogEntry }) {
   const [expanded, setExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
   const statusClass = `status-${Math.floor(entry.responseStatus / 100)}xx`;
+
+  async function handleCopy(e: React.MouseEvent) {
+    e.stopPropagation();
+    await navigator.clipboard.writeText(JSON.stringify(entry, null, 2));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
 
   return (
     <div className="log-card">
-      <button
-        className="log-card-header"
-        onClick={() => setExpanded(e => !e)}
-      >
-        <div className="log-card-summary">
-          <span className="log-method-badge">{entry.method}</span>
-          <span className="log-path">{entry.path}</span>
-          <span className={`log-status ${statusClass}`}>
-            {entry.responseStatus}
-          </span>
-          <span className="log-timestamp">
-            {new Date(entry.timestamp).toLocaleTimeString()}
-          </span>
-        </div>
-        <span className={`sidebar-chevron ${expanded ? 'open' : ''}`}>›</span>
-      </button>
+      <div className="log-card-header-row">
+        <button
+          className="log-card-header"
+          onClick={() => setExpanded(e => !e)}
+        >
+          <div className="log-card-summary">
+            <span className="log-method-badge">{entry.method}</span>
+            <span className="log-path">{entry.path}</span>
+            <span className={`log-status ${statusClass}`}>
+              {entry.responseStatus}
+            </span>
+            <span className="log-timestamp">
+              {new Date(entry.timestamp).toLocaleTimeString()}
+            </span>
+          </div>
+          <span className={`sidebar-chevron ${expanded ? 'open' : ''}`}>›</span>
+        </button>
+        <button className="btn btn-ghost log-copy-btn" onClick={handleCopy}>
+          {copied ? 'Copied!' : 'Copy'}
+        </button>
+      </div>
 
       {expanded && (
         <div className="log-card-body">
