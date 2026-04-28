@@ -16,19 +16,9 @@ const INTEGRATION_ITEMS: { label: string; page: Page }[] = [
   { label: 'signin',       page: 'config-signin'       },
 ];
 
-const LOGS_ITEMS: { label: string; page: Page }[] = [
-  { label: 'verifyuser',   page: 'logs-verifyuser'   },
-  { label: 'authorize',    page: 'logs-authorize'    },
-  { label: 'transfer',     page: 'logs-transfer'     },
-  { label: 'cancel',       page: 'logs-cancel'       },
-  { label: 'notification', page: 'logs-notification' },
-  { label: 'lookupuser',   page: 'logs-lookupuser'   },
-  { label: 'signin',       page: 'logs-signin'       },
-];
 
 export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
   const [integrationOpen, setIntegrationOpen] = useState(true);
-  const [logsOpen, setLogsOpen] = useState(true);
 
   return (
     <aside className="sidebar">
@@ -62,25 +52,11 @@ export default function Sidebar({ currentPage, onNavigate }: SidebarProps) {
 
         <div className="sidebar-section">
           <button
-            className="sidebar-section-header"
-            onClick={() => setLogsOpen(o => !o)}
+            className={`sidebar-item ${currentPage === 'logs' ? 'active' : ''}`}
+            onClick={() => onNavigate('logs')}
           >
-            <span className={`sidebar-chevron ${logsOpen ? 'open' : ''}`}>›</span>
             Logs
           </button>
-          {logsOpen && (
-            <div className="sidebar-section-items">
-              {LOGS_ITEMS.map(({ label, page }) => (
-                <button
-                  key={page}
-                  className={`sidebar-item ${currentPage === page ? 'active' : ''}`}
-                  onClick={() => onNavigate(page)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       </nav>
     </aside>

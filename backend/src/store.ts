@@ -28,47 +28,13 @@ export const store = {
   lookupuserConfig:   cloneDefaults(DEFAULT_LOOKUPUSER_CONFIG),
   signinConfig:       cloneDefaults(DEFAULT_SIGNIN_CONFIG),
 
-  verifyuserLogs:   [] as LogEntry[],
-  authorizeLogs:    [] as LogEntry[],
-  transferLogs:     [] as LogEntry[],
-  cancelLogs:       [] as LogEntry[],
-  notificationLogs: [] as LogEntry[],
-  lookupuserLogs:   [] as LogEntry[],
-  signinLogs:       [] as LogEntry[],
-
-  getLogs(endpoint: string): LogEntry[] {
-    switch (endpoint) {
-      case 'authorize':    return this.authorizeLogs;
-      case 'transfer':     return this.transferLogs;
-      case 'cancel':       return this.cancelLogs;
-      case 'notification': return this.notificationLogs;
-      case 'lookupuser':   return this.lookupuserLogs;
-      case 'signin':       return this.signinLogs;
-      default:             return this.verifyuserLogs;
-    }
-  },
+  logs: [] as LogEntry[],
 
   addLog(entry: LogEntry) {
-    switch (entry.endpoint) {
-      case 'authorize':    this.authorizeLogs.push(entry); break;
-      case 'transfer':     this.transferLogs.push(entry); break;
-      case 'cancel':       this.cancelLogs.push(entry); break;
-      case 'notification': this.notificationLogs.push(entry); break;
-      case 'lookupuser':   this.lookupuserLogs.push(entry); break;
-      case 'signin':       this.signinLogs.push(entry); break;
-      default:             this.verifyuserLogs.push(entry); break;
-    }
+    this.logs.push(entry);
   },
 
-  clearLogs(endpoint: string) {
-    switch (endpoint) {
-      case 'authorize':    this.authorizeLogs = []; break;
-      case 'transfer':     this.transferLogs = []; break;
-      case 'cancel':       this.cancelLogs = []; break;
-      case 'notification': this.notificationLogs = []; break;
-      case 'lookupuser':   this.lookupuserLogs = []; break;
-      case 'signin':       this.signinLogs = []; break;
-      default:             this.verifyuserLogs = []; break;
-    }
+  clearLogs() {
+    this.logs = [];
   },
 };

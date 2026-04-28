@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { LogEntry } from '../types';
-import { fetchLogsFor, clearLogsFor } from '../api';
+import { fetchAllLogs, clearAllLogs } from '../api';
 
 function JsonDisplay({ data }: { data: unknown }) {
   return (
@@ -62,25 +62,21 @@ function LogCard({ entry }: { entry: LogEntry }) {
   );
 }
 
-interface Props {
-  endpoint: string;
-}
-
-export default function EndpointLogsPage({ endpoint }: Props) {
+export default function AllLogsPage() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [clearing, setClearing] = useState(false);
 
   const loadLogs = useCallback(async () => {
     try {
-      const data = await fetchLogsFor(endpoint);
+      const data = await fetchAllLogs();
       setLogs(data);
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
-  }, [endpoint]);
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -93,7 +89,7 @@ export default function EndpointLogsPage({ endpoint }: Props) {
   async function handleClear() {
     setClearing(true);
     try {
-      await clearLogsFor(endpoint);
+      await clearAllLogs();
       setLogs([]);
     } catch (e) {
       console.error(e);
@@ -110,10 +106,9 @@ export default function EndpointLogsPage({ endpoint }: Props) {
     <div className="page">
       <div className="page-header">
         <div>
-          <h1 className="page-title">{endpoint}</h1>
+          <h1 className="page-title">Logs</h1>
           <p className="page-subtitle">
-            Incoming requests and outgoing responses for{' '}
-            <code>POST /{endpoint}</code>
+            All incoming requests and outgoing responses, in handled order.
           </p>
         </div>
         <div className="page-actions">
@@ -135,7 +130,7 @@ export default function EndpointLogsPage({ endpoint }: Props) {
           <div className="empty-state-icon">○</div>
           <p className="empty-state-text">No logs yet.</p>
           <p className="empty-state-hint">
-            Send a request to <code>POST /{endpoint}</code> to see logs here.
+            Send a request to any endpoint to see logs here.
             Logs auto-refresh every 5 seconds.
           </p>
         </div>

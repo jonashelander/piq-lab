@@ -3,17 +3,13 @@ import { store } from '../store';
 
 const router = Router();
 
-const endpoints = ['verifyuser', 'authorize', 'transfer', 'cancel', 'notification', 'lookupuser', 'signin'] as const;
+router.get('/', (_req, res) => {
+  res.json([...store.logs]);
+});
 
-for (const ep of endpoints) {
-  router.get(`/${ep}`, (_req, res) => {
-    res.json([...store.getLogs(ep)].reverse());
-  });
-
-  router.delete(`/${ep}`, (_req, res) => {
-    store.clearLogs(ep);
-    res.json({ cleared: true });
-  });
-}
+router.delete('/', (_req, res) => {
+  store.clearLogs();
+  res.json({ cleared: true });
+});
 
 export default router;

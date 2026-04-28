@@ -18,18 +18,16 @@ export async function saveConfigFor(endpoint: string, config: ConfigRecord[]): P
   return res.json();
 }
 
-export async function fetchLogsFor(endpoint: string): Promise<LogEntry[]> {
-  const res = await fetch(`${BASE}/logs/${endpoint}`);
+export async function fetchAllLogs(): Promise<LogEntry[]> {
+  const res = await fetch(`${BASE}/logs`);
   if (!res.ok) throw new Error('Failed to fetch logs');
   return res.json();
 }
 
-export async function clearLogsFor(endpoint: string): Promise<void> {
-  const res = await fetch(`${BASE}/logs/${endpoint}`, { method: 'DELETE' });
+export async function clearAllLogs(): Promise<void> {
+  const res = await fetch(`${BASE}/logs`, { method: 'DELETE' });
   if (!res.ok) throw new Error('Failed to clear logs');
 }
 
 export const fetchConfig = () => fetchConfigFor('verifyuser');
 export const saveConfig  = (config: ConfigRecord[]) => saveConfigFor('verifyuser', config);
-export const fetchLogs   = () => fetchLogsFor('verifyuser');
-export const clearLogs   = () => clearLogsFor('verifyuser');
