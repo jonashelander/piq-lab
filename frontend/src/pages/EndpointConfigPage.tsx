@@ -91,6 +91,7 @@ export default function EndpointConfigPage({ endpoint, nestedField }: Props) {
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle');
   const [jsonInput, setJsonInput] = useState('');
   const [jsonError, setJsonError] = useState('');
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle');
 
   useEffect(() => {
     setLoading(true);
@@ -182,6 +183,24 @@ export default function EndpointConfigPage({ endpoint, nestedField }: Props) {
     setJsonInput('');
   }
 
+  async function handleCopyJson() {
+    const sorted = [...config].sort((a, b) => a.order - b.order);
+    const responseBody: Record<string, unknown> = {};
+    for (const record of sorted) {
+      if (record.included) {
+        responseBody[record.key] = record.value;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(responseBody, null, 2));
+      setCopyStatus('copied');
+      setTimeout(() => setCopyStatus('idle'), 2500);
+    } catch {
+      setCopyStatus('error');
+      setTimeout(() => setCopyStatus('idle'), 2500);
+    }
+  }
+
   if (loading) {
     return <div className="page-loading">Loading configuration…</div>;
   }
@@ -269,6 +288,30 @@ export default function EndpointConfigPage({ endpoint, nestedField }: Props) {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <div>
+            <h2 className="card-title">Export JSON</h2>
+            <p className="card-description">
+              Copy the current response body (included fields only) as a JSON object.
+            </p>
+          </div>
+        </div>
+        <div className="card-body">
+          <div className="json-actions">
+            <button className="btn btn-secondary" onClick={handleCopyJson}>
+              Copy JSON
+            </button>
+            {copyStatus === 'copied' && (
+              <span className="save-status success">Copied</span>
+            )}
+            {copyStatus === 'error' && (
+              <span className="save-status error">Copy failed</span>
+            )}
+          </div>
         </div>
       </div>
 
