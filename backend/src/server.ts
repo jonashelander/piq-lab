@@ -3,6 +3,7 @@ import cors from 'cors';
 import configRouter from './routes/config';
 import logsRouter from './routes/logs';
 import integrationRouter from './routes/integration';
+import setsRouter from './routes/sets';
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3001;
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/api/config', configRouter);
 app.use('/api/logs', logsRouter);
+app.use('/api/sets', setsRouter);
 app.use(integrationRouter);
 
 app.listen(PORT, () => {

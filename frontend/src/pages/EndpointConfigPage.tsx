@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ConfigRecord } from '../types';
-import { fetchConfigFor, saveConfigFor } from '../api';
+import ResponseSetBar from '../components/ResponseSetBar';
 
 // ── ThreeDS2 types ────────────────────────────────────────────────────────────
 
@@ -306,8 +306,8 @@ function AttributesEditor({
       {entries.length === 0 && (
         <p className="attr-empty">No attributes. Add one below.</p>
       )}
-      {entries.map(([key, value]) => (
-        <div key={key} className="attr-row">
+      {entries.map(([key, value], index) => (
+        <div key={index} className="attr-row">
           <input
             className="attr-key-input"
             value={key}
@@ -345,65 +345,64 @@ function AttributesEditor({
 interface Props {
   endpoint: string;
   nestedField?: string;
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
-export default function EndpointConfigPage({ endpoint, nestedField }: Props) {
+export default function EndpointConfigPage({ endpoint, nestedField, onDirtyChange }: Props) {
   const [config, setConfig] = useState<ConfigRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle');
+  const [isDirty, setIsDirty] = useState(false);
   const [jsonInput, setJsonInput] = useState('');
   const [jsonError, setJsonError] = useState('');
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle');
   const [threeDS2Collapsed, setThreeDS2Collapsed] = useState(true);
+  const savedConfigRef = useRef<string>('');
 
+  function markClean(cfg: ConfigRecord[]) {
+    savedConfigRef.current = JSON.stringify(cfg);
+    setIsDirty(false);
+    onDirtyChange?.(false);
+  }
+
+  function updateConfig(cfg: ConfigRecord[]) {
+    setConfig(cfg);
+    const dirty = JSON.stringify(cfg) !== savedConfigRef.current;
+    setIsDirty(dirty);
+    onDirtyChange?.(dirty);
+  }
+
+  // Guard for ResponseSetBar before switching sets
+  function confirmSwitch(): boolean {
+    if (!isDirty) return true;
+    return window.confirm('You have unsaved changes. Switch set anyway?');
+  }
+
+  // loading is cleared by ResponseSetBar when it delivers the first config
   useEffect(() => {
-    setLoading(true);
-    setConfig([]);
-    fetchConfigFor(endpoint)
-      .then(setConfig)
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    setIsDirty(false);
+    onDirtyChange?.(false);
+    savedConfigRef.current = '';
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endpoint]);
 
   const allIncluded = config.length > 0 && config.every(r => r.included);
 
   function handleToggleAll() {
     const nextState = !allIncluded;
-    setConfig(cfg => cfg.map(r => ({ ...r, included: nextState })));
+    updateConfig(config.map(r => ({ ...r, included: nextState })));
   }
 
   function handleToggle(key: string) {
-    setConfig(cfg =>
-      cfg.map(r => (r.key === key ? { ...r, included: !r.included } : r))
-    );
+    updateConfig(config.map(r => r.key === key ? { ...r, included: !r.included } : r));
   }
 
   function handleValueChange(key: string, value: string) {
-    setConfig(cfg =>
-      cfg.map(r => (r.key === key ? { ...r, value } : r))
-    );
+    updateConfig(config.map(r => r.key === key ? { ...r, value } : r));
   }
 
   function handleNestedChange(attrs: Record<string, unknown>, key?: string) {
     const targetKey = key ?? nestedField;
-    setConfig(cfg =>
-      cfg.map(r => (r.key === targetKey ? { ...r, value: attrs } : r))
-    );
-  }
-
-  async function handleSave() {
-    setSaving(true);
-    setSaveStatus('idle');
-    try {
-      await saveConfigFor(endpoint, config);
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 2500);
-    } catch {
-      setSaveStatus('error');
-    } finally {
-      setSaving(false);
-    }
+    updateConfig(config.map(r => r.key === targetKey ? { ...r, value: attrs } : r));
   }
 
   function handleApplyJson() {
@@ -474,35 +473,24 @@ export default function EndpointConfigPage({ endpoint, nestedField }: Props) {
     }
   }
 
-  if (loading) {
-    return <div className="page-loading">Loading configuration…</div>;
-  }
-
   const sorted = [...config].sort((a, b) => a.order - b.order);
 
   return (
     <div className="page">
+      <ResponseSetBar
+        endpoint={endpoint}
+        config={config}
+        isDirty={isDirty}
+        onConfigChange={cfg => { setConfig(cfg); markClean(cfg); setLoading(false); }}
+        onSaved={markClean}
+        confirmSwitch={confirmSwitch}
+      />
       <div className="page-header">
         <div>
           <h1 className="page-title">{endpoint}</h1>
           <p className="page-subtitle">
             Configure the response returned by <code>POST /{endpoint}</code>
           </p>
-        </div>
-        <div className="page-actions">
-          {saveStatus === 'saved' && (
-            <span className="save-status success">Saved</span>
-          )}
-          {saveStatus === 'error' && (
-            <span className="save-status error">Error saving</span>
-          )}
-          <button
-            className="btn btn-primary"
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? 'Saving…' : 'Save'}
-          </button>
         </div>
       </div>
 
@@ -520,6 +508,9 @@ export default function EndpointConfigPage({ endpoint, nestedField }: Props) {
           </div>
         </div>
 
+        {loading ? (
+          <div className="page-loading">Loading configuration…</div>
+        ) : (
         <div className="config-table">
           <div className="config-table-header">
             <span className="col-include">Include</span>
@@ -582,6 +573,7 @@ export default function EndpointConfigPage({ endpoint, nestedField }: Props) {
             </div>
           ))}
         </div>
+        )}
       </div>
 
       <div className="card">

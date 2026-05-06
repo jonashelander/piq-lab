@@ -5,6 +5,13 @@ export interface ConfigRecord {
   order: number;
 }
 
+export interface EndpointSet {
+  id: string;
+  name: string;
+  createdAt: string;
+  config: ConfigRecord[];
+}
+
 export interface LogEntry {
   id: string;
   timestamp: string;
