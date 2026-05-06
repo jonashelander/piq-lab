@@ -14,7 +14,7 @@ function cloneDefaults(defaults: ConfigRecord[]): ConfigRecord[] {
     ...r,
     value:
       typeof r.value === 'object'
-        ? { ...(r.value as Record<string, string>) }
+        ? JSON.parse(JSON.stringify(r.value))
         : r.value,
   }));
 }

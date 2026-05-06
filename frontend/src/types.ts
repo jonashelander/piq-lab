@@ -1,6 +1,6 @@
 export interface ConfigRecord {
   key: string;
-  value: string | Record<string, string>;
+  value: string | Record<string, unknown>;
   included: boolean;
   order: number;
 }

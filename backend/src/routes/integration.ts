@@ -1,9 +1,34 @@
 import { Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { store } from '../store';
-import { ConfigRecord } from '../types';
+import { ConfigRecord, ThreeDS2Field, ThreeDS2PhoneField } from '../types';
 
 const router = Router();
+
+type ThreeDS2Stored = Record<string, ThreeDS2Field | ThreeDS2PhoneField | Record<string, ThreeDS2Field | ThreeDS2PhoneField>>;
+
+function serializeThreeDS2(stored: ThreeDS2Stored): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, fieldOrSection] of Object.entries(stored)) {
+    if (
+      fieldOrSection !== null &&
+      typeof fieldOrSection === 'object' &&
+      'included' in fieldOrSection &&
+      'value' in fieldOrSection
+    ) {
+      const f = fieldOrSection as ThreeDS2Field | ThreeDS2PhoneField;
+      if (f.included) {
+        out[key] = f.value;
+      }
+    } else if (fieldOrSection !== null && typeof fieldOrSection === 'object') {
+      const sectionOut = serializeThreeDS2(fieldOrSection as ThreeDS2Stored);
+      if (Object.keys(sectionOut).length > 0) {
+        out[key] = sectionOut;
+      }
+    }
+  }
+  return out;
+}
 
 function addMockEndpoint(
   path: string,
@@ -17,7 +42,11 @@ function addMockEndpoint(
     const responseBody: Record<string, unknown> = {};
     for (const record of sorted) {
       if (record.included) {
-        responseBody[record.key] = record.value;
+        if (record.key === 'threeDS2') {
+          responseBody[record.key] = serializeThreeDS2(record.value as ThreeDS2Stored);
+        } else {
+          responseBody[record.key] = record.value;
+        }
       }
     }
 
