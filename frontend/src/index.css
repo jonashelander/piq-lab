@@ -430,6 +430,13 @@ body {
   opacity: 0.45;
 }
 
+.config-table-header .col-include,
+.config-table-header .col-key,
+.config-table-header .col-value {
+  padding-top: 0;
+  align-items: center;
+}
+
 .col-include {
   display: flex;
   align-items: center;
