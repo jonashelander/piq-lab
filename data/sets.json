@@ -103,7 +103,7 @@
         },
         {
           "key": "balanceCy",
-          "value": "USD",
+          "value": "EUR",
           "included": true,
           "order": 16
         },
@@ -506,7 +506,7 @@
       "config": [
         {
           "key": "userId",
-          "value": "JonasSEK",
+          "value": "JonasSEKK",
           "included": true,
           "order": 0
         },

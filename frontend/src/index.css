@@ -1016,3 +1016,18 @@ body {
   color: #e05252;
   white-space: nowrap;
 }
+
+/* Per-field / per-row dirty indicators */
+.row-dirty {
+  box-shadow: inset 3px 0 0 #e05252;
+}
+
+.attr-row-dirty {
+  box-shadow: inset 3px 0 0 #e05252;
+}
+
+.field-dirty input,
+.field-dirty select,
+.field-dirty textarea {
+  border-left: 3px solid #e05252;
+}
