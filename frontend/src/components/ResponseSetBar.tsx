@@ -8,7 +8,7 @@ interface Props {
   isDirty: boolean;
   onConfigChange: (config: ConfigRecord[]) => void;
   onSaved: (config: ConfigRecord[]) => void;
-  confirmSwitch: () => boolean;
+  confirmSwitch: () => Promise<boolean>;
 }
 
 export default function ResponseSetBar({ endpoint, config, isDirty, onConfigChange, onSaved, confirmSwitch }: Props) {
@@ -50,9 +50,9 @@ export default function ResponseSetBar({ endpoint, config, isDirty, onConfigChan
     setTimeout(() => setStatus('idle'), 2500);
   }
 
-  function handleSelect(id: string) {
+  async function handleSelect(id: string) {
     if (id === selectedId || busy) return;
-    if (!confirmSwitch()) return;
+    if (!(await confirmSwitch())) return;
     const set = getSet(id);
     if (!set) return;
     setSelectedId(id);

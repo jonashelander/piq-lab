@@ -3,18 +3,26 @@ import Sidebar from './components/Sidebar';
 import EndpointConfigPage from './pages/EndpointConfigPage';
 import AllLogsPage from './pages/AllLogsPage';
 import { Page } from './types';
+import { useConfirmDialog } from './hooks/useConfirmDialog';
 
 export default function App() {
   const [page, setPage] = useState<Page>('config-verifyuser');
   const [isDirty, setIsDirty] = useState(false);
+  const { confirm, dialogEl } = useConfirmDialog();
 
-  const handleNavigate = useCallback((next: Page) => {
+  const handleNavigate = useCallback(async (next: Page) => {
     if (isDirty) {
-      if (!window.confirm('You have unsaved changes. Leave anyway?')) return;
+      const ok = await confirm({
+        title: 'Unsaved changes',
+        message: 'You have unsaved changes. Leave without saving?',
+        confirmLabel: 'Leave',
+        cancelLabel: 'Stay',
+      });
+      if (!ok) return;
     }
     setIsDirty(false);
     setPage(next);
-  }, [isDirty]);
+  }, [isDirty, confirm]);
 
   function renderPage() {
     switch (page) {
@@ -32,9 +40,10 @@ export default function App() {
   return (
     <div className="app-layout">
       <Sidebar currentPage={page} onNavigate={handleNavigate} />
-      <main className="app-main">
+      <main className={`app-main${dialogEl ? ' app-blurred' : ''}`}>
         {renderPage()}
       </main>
+      {dialogEl}
     </div>
   );
 }

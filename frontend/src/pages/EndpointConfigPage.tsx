@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { ConfigRecord } from '../types';
 import ResponseSetBar from '../components/ResponseSetBar';
+import { useConfirmDialog } from '../hooks/useConfirmDialog';
 
 // ── ThreeDS2 types ────────────────────────────────────────────────────────────
 
@@ -373,6 +374,7 @@ export default function EndpointConfigPage({ endpoint, nestedField, onDirtyChang
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle');
   const [threeDS2Collapsed, setThreeDS2Collapsed] = useState(true);
   const savedConfigRef = useRef<string>('');
+  const { confirm, dialogEl } = useConfirmDialog();
 
   function markClean(cfg: ConfigRecord[]) {
     savedConfigRef.current = JSON.stringify(cfg);
@@ -388,9 +390,14 @@ export default function EndpointConfigPage({ endpoint, nestedField, onDirtyChang
   }
 
   // Guard for ResponseSetBar before switching sets
-  function confirmSwitch(): boolean {
+  async function confirmSwitch(): Promise<boolean> {
     if (!isDirty) return true;
-    return window.confirm('You have unsaved changes. Switch set anyway?');
+    return confirm({
+      title: 'Unsaved changes',
+      message: 'You have unsaved changes. Switch set anyway?',
+      confirmLabel: 'Switch',
+      cancelLabel: 'Stay',
+    });
   }
 
   // loading is cleared by ResponseSetBar when it delivers the first config
@@ -503,6 +510,7 @@ export default function EndpointConfigPage({ endpoint, nestedField, onDirtyChang
   }, [savedConfigRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
+    <>
     <div className="page">
       <ResponseSetBar
         endpoint={endpoint}
@@ -670,5 +678,7 @@ export default function EndpointConfigPage({ endpoint, nestedField, onDirtyChang
         </div>
       </div>
     </div>
+    {dialogEl}
+    </>
   );
 }
