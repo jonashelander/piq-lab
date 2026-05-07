@@ -406,6 +406,7 @@ body {
   letter-spacing: 0.06em;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg);
+  align-items: center;
 }
 
 .config-row {
