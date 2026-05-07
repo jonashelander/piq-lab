@@ -183,7 +183,7 @@ body {
 
 /* ─── Page ───────────────────────────────────────────────────────────────── */
 .page {
-  max-width: 820px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 44px 36px 60px;
   display: flex;
@@ -867,7 +867,7 @@ body {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--text-secondary);
-  width: 220px;
+  width: 280px;
   flex-shrink: 0;
 }
 

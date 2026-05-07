@@ -135,7 +135,7 @@
         },
         {
           "key": "threeDS2",
-          "included": false,
+          "included": true,
           "order": 19,
           "value": {
             "deviceChannel": {
